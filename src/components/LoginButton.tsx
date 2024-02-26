@@ -16,11 +16,23 @@ export function LoginButton(props: loginProps) {
 
   if (props.isLoggedIn) {
     return (
-      <button aria-label='Sign Out' onClick={authenticate}>Sign out</button>
-    )
+      <button
+        className="Login-button"
+        aria-label="Sign Out"
+        onClick={authenticate}
+      >
+        Sign out
+      </button>
+    );
   } else {
     return (
-      <button aria-label='Login' onClick={authenticate}>Login</button>
-    )
+      <button
+        className="Login-button"
+        aria-label="Login"
+        onClick={authenticate}
+      >
+        Login
+      </button>
+    );
   }
 }

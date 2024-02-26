@@ -4,8 +4,9 @@ import { ControlledInput } from "./ControlledInput";
 
 interface REPLInputProps {
   history: string[];
-  setHistory: Dispatch<SetStateAction<string[]>>; // ARE ALL METHODS DISPATCHES?
-  // DONE: Fill this with desired props... Maybe something to keep track of the submitted commands
+  setHistory: Dispatch<SetStateAction<string[]>>;
+  mode: string;
+  setMode: Dispatch<SetStateAction<string>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -13,8 +14,8 @@ export function REPLInput(props: REPLInputProps) {
   // Remember: let React manage state in your webapp.
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
-  // DONE WITH TA : add a count state
   const [count, setCount] = useState<number>(0);
+  const [mode, setMode] = useState<string>("Brief");
 
   // DONE WITH TA: build a handleSubmit function called in button onClick
   // DONE: Once it increments, try to make it push commands... Note that you can use the `...` spread syntax to copy what was there before
@@ -27,6 +28,14 @@ export function REPLInput(props: REPLInputProps) {
     setCount(count + 1);
     props.setHistory([...props.history, commandString]); // Update history variable from top level
     setCommandString("");
+  };
+  const handleModeswitch = () => {
+    if (mode == "Verbose") {
+      setMode("Brief");
+    }
+    if (mode == "Brief") {
+      setMode("Verbose");
+    }
   };
 
   return (
@@ -43,9 +52,15 @@ export function REPLInput(props: REPLInputProps) {
           ariaLabel={"Command input"}
         />
       </fieldset>
-      {/* TODO WITH TA: Build a handleSubmit function that increments count and displays the text in the button */}
-      {/* TODO: Currently this button just counts up, can we make it push the contents of the input box to the history?*/}
-      <button onClick={handleSubmit}>Submitted {count} times</button>
+      {/* Submit command */}
+      <div className="repl-input-box-holder">
+        <button className="repl-input-box" onClick={handleSubmit}>
+          Submitted {count} times
+        </button>
+        <button className="repl-input-box" onClick={handleModeswitch}>
+          {mode} mode
+        </button>
+      </div>
     </div>
   );
 }

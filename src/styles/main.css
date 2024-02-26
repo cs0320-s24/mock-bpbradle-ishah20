@@ -5,27 +5,42 @@
 */
 
 .repl {
-    position:relative;
-    min-height:95vh;    
+  position: relative;
+  min-height: 95vh;
 }
 
-.repl-history {      
-    height:55vh;   
-    margin: auto;
-    display: block;
-    overflow: scroll;    
+.repl-history {
+  height: 55vh;
+  margin: auto;
+  display: block;
+  overflow: scroll;
 }
 
-.repl-input {        
-    margin: auto;    
-    height:10vh;
+.repl-input {
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
 }
+
+.repl-input-box-holder {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.repl-input-box {
+  margin-top: 2vh;
+}
+
 .repl-command-box {
-    width: 90%;            
-    margin: auto;
-    display: block;
+  width: 90%;
+  margin: auto;
+  display: block;
 }
-button{
-    margin: auto;
-    display: block;
+button {
+  margin-left: 2vh;
+  margin-right: 2vh;
+  width: 26vh !important;
+  display: block;
 }

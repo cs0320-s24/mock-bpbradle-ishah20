@@ -2,6 +2,7 @@ import "../styles/main.css";
 
 interface REPLHistoryProps {
   history: string[];
+  mode: string;
   // DONE: Fill with some shared state tracking all the pushed commands
 }
 export function REPLHistory(props: REPLHistoryProps) {
