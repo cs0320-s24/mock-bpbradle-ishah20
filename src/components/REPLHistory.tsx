@@ -24,7 +24,7 @@ export function REPLHistory({ history, mode }: REPLHistoryProps) {
             <div style={{ display: "flex", justifyContent: "center" }}>
               <table border={1}>
                 <tbody>
-                  {csv.slice(1).map((row, rowIndex) => (
+                  {csv.map((row, rowIndex) => (
                     <tr key={rowIndex}>
                       {row.map((cell, cellIndex) => (
                         <td key={cellIndex} style={{ padding: "0 10px" }}>
