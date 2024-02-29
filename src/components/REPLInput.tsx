@@ -140,32 +140,32 @@ export function REPLInput(props: REPLInputProps) {
   }
 
   // Parses input and calls function for inputted command
-  function handleCommand(str: string | string[] | null) {
+  function handleCommand(str: string | null) {
     let command_string: string | undefined;
 
     // Parse input
     if (Array.isArray(str)) {
       command_string = str[0]; // if load() or search()
-    } 
-    else if (str == null) {
-      return [["ERROR: Null input to handleCommand()"]]
-    } 
-    else {
-      command_string = str // if view()
+    } else if (str == null) {
+      return [["ERROR: Null input to handleCommand()"]];
+    } else {
+      command_string = str; // if view()
     }
 
     let result_of_command: string[][];
     if (command_string === "load") {
-      result_of_command = [[loadCSV(str[1])]];
+      result_of_command = [[str], [loadCSV(str[1])]];
     } else if (command_string === "view") {
       result_of_command = viewCSV();
+      result_of_command.unshift([str]);
     } else if (command_string === "search") {
       result_of_command = searchCSV([str[1], str[2]]);
+      result_of_command.unshift([str]);
     } else {
-      result_of_command = [["ERROR"]];
+      result_of_command = [[str], ["ERROR"]];
     }
 
-    return result_of_command;
+    return result_of_command; // index 0: <command text>, rest: <result of running the command>
   }
 
   // DONE WITH TA: build a handleSubmit function called in button onClick
