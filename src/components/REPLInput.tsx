@@ -2,12 +2,15 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { mock } from "node:test";
+import { load } from "../REPLFunctions/load";
+import { view } from "../REPLFunctions/view";
+import { search } from "../REPLFunctions/search";
 
 interface REPLInputProps {
-  history: string[][][];
-  setHistory: Dispatch<SetStateAction<string[][][]>>;
-  mode: string;
-  setMode: Dispatch<SetStateAction<string>>;
+  history: string[][][][];
+  setHistory: Dispatch<SetStateAction<string[][][][]>>;
+  mode: string | undefined;
+  setMode: Dispatch<SetStateAction<string | undefined>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -17,157 +20,50 @@ export function REPLInput(props: REPLInputProps) {
   const [commandString, setCommandString] = useState<string>("");
   const [count, setCount] = useState<number>(0);
   const [mode, setMode] = useState<string>("Brief");
-  const [currentCSV, setCurrentCSV] = useState<string[][]>();
-
-  const mockedCSVs: { [key: string]: string[][] } = {
-    "data/census/dol_ri_earnings_disparity_no_header.csv": [
-      ["RI", "White", "$1,058.47", "395773.6521", "$1.00", "75%"],
-      ["RI", "Black", "$770.26", "30424.80376", "$0.73", "6%"],
-      [
-        "RI",
-        "Native American/American Indian",
-        "$471.07",
-        "2315.505646",
-        "$0.45",
-        "0%",
-      ],
-      [
-        "RI",
-        "Asian-Pacific Islander",
-        "$1,080.09",
-        "18956.71657",
-        "$1.02",
-        "4%",
-      ],
-      ["RI", "Hispanic/Latino", "$673.14", "74596.18851", "$0.64", "14%"],
-      ["RI", "Multiracial", "$971.89", "8883.049171", "$0.92", "2%"],
-    ],
-    "data/census/dol_ri_earnings_disparity.csv": [
-      [
-        "State",
-        "Data Type",
-        "Average Weekly Earnings",
-        "Number of Workers",
-        "Earnings Disparity",
-        "Employed Percent",
-      ],
-      ["RI", "White", "$1,058.47", "395773.6521", "$1.00", "75%"],
-      ["RI", "Black", "$770.26", "30424.80376", "$0.73", "6%"],
-      [
-        "RI",
-        "Native American/American Indian",
-        "$471.07",
-        "2315.505646",
-        "$0.45",
-        "0%",
-      ],
-      [
-        "RI",
-        "Asian-Pacific Islander",
-        "$1,080.09",
-        "18956.71657",
-        "$1.02",
-        "4%",
-      ],
-      ["RI", "Hispanic/Latino", "$673.14", "74596.18851", "$0.64", "14%"],
-      ["RI", "Multiracial", "$971.89", "8883.049171", "$0.92", "2%"],
-    ],
-  };
-
-  // Takes in filepath and outputs
-  function loadCSV(filepath: string): string {
-    const csv = mockedCSVs[filepath];
-    if (csv) {
-      setCurrentCSV(csv);
-      return "Loaded CSV at " + filepath;
-    } else {
-      return "ERROR in loading CSV";
-    }
-  }
-
-  // Return the matrix of stirngs for the current stored CSV
-  function viewCSV(): string[][] {
-    if (currentCSV !== undefined) {
-      return currentCSV;
-    } else {
-      return [["ERROR: Not Loaded Yet"]];
-    }
-  }
-
-  function searchCSV(inputs: string[]): string[][] {
-    if (currentCSV !== undefined) {
-      // Extract column and value strings from inputs
-      let column: string = "";
-      let value: string = "";
-      if (inputs.length == 2) {
-        column = inputs[0];
-        value = inputs[1];
-      } else {
-        return [["ERROR: Wrong Inputs"]];
-      }
-
-      /* ERROR OF NOTE: If CSV has no headers, we parse it's first row to find 
-      column anyways, if your inputted column to search is a string in the first
-      actual row of values in the CSV we will search the entire CSV in that column
-      and not return an error which may be misleading */
-      // column -> index of column
-      let col: number;
-      if (!isNaN(parseInt(column)) && parseInt(column).toString() === column) {
-        col = parseInt(column);
-      } else {
-        col = currentCSV[0].indexOf(column);
-        if (col === -1) {
-          return [
-            [
-              "ERROR: Column Header not found in Loaded CSV, check the formatting of the words you are searching for...",
-            ],
-          ];
-        }
-      }
-
-      const csv_minus_header = currentCSV.slice(1);
-      let rows_from_search: string[][] = []; // Q: Does this work and not cause an issue
-      let found: boolean = false;
-      for (let row of csv_minus_header) {
-        if (row[col] === value) {
-          found = true;
-          rows_from_search.push(row);
-        }
-      }
-      if (!found) {
-        return [[]];
-      }
-      return rows_from_search;
-    } else {
-      return [["ERROR: Not Loaded Yet"]];
-    }
-  }
+  const [currentCSV, setCurrentCSV] = useState<string>();
 
   // Parses input and calls function for inputted command
-  function handleCommand(str: string | null) {
+  function handleCommand(str: string | null): string[][][] {
     let command_string: string | undefined;
 
     // Parse input
     if (str == null) {
-      return [["ERROR: Null input to handleCommand()"]];
+      return [[["ERROR: Null input to handleCommand()"]]];
     } else if (str.split(" ").length > 1) {
       command_string = str.split(" ")[0]; // if load() or search()
     } else {
       command_string = str; // if view()
     }
 
-    let result_of_command: string[][];
+    let result_of_command: string[][][];
+    // LOAD
     if (command_string.toLowerCase() === "load") {
-      result_of_command = [[str], [loadCSV(str.split(" ")[1])]];
-    } else if (command_string.toLowerCase() === "view") {
-      result_of_command = [[str], ...viewCSV()]; // Add command to result
-    } else if (command_string.toLowerCase() === "search") {
-      result_of_command = searchCSV([str.split(" ")[1], str.split(" ")[2]]);
-      result_of_command.unshift([str]); // Add command to result
-    } else {
-      result_of_command = [[str], ["ERROR: Incorrect Input"]];
+      let filepath: string = str.split(" ")[1];
+      setCurrentCSV(filepath);
+      result_of_command = [[[str]], [["<Loaded CSV> --> " + filepath]]];
     }
-
+    // VIEW
+    else if (command_string.toLowerCase() === "view") {
+      if (currentCSV === undefined) {
+        result_of_command = [[["ERROR: calling view when no csv is loaded"]]];
+      }
+      let csv: string[][] = view([currentCSV!]);
+      result_of_command = [[[str]], csv]; // Add command to result
+    }
+    // SEARCH
+    else if (command_string.toLowerCase() === "search") {
+      if (currentCSV === undefined) {
+        result_of_command = [[["ERROR: calling search when no csv is loaded"]]];
+      }
+      let csv: string[][] = search([
+        currentCSV!, // filename of loaded csv
+        str.split(" ")[1], // Column to search
+        str.split(" ")[2], // Value to search for
+      ]);
+      result_of_command = [[[str]], csv];
+    } else {
+      result_of_command = [[[str]], [["ERROR: Incorrect Input"]]];
+    }
     return result_of_command; // index 0: <command text>, rest: <result of running the command>
   }
 
