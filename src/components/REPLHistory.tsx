@@ -1,10 +1,15 @@
 import "../styles/main.css";
 
 interface REPLHistoryProps {
-  history: string[];
+  history: string[][][];
   mode: string;
   // DONE: Fill with some shared state tracking all the pushed commands
 }
+
+function modeModifier() {
+  //TODO: Mode Modifier to make the response brief or verbose
+}
+
 export function REPLHistory(props: REPLHistoryProps) {
   return (
     <div className="repl-history">
