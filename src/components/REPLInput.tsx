@@ -100,8 +100,8 @@ export function REPLInput(props: REPLInputProps) {
       let column: string = "";
       let value: string = "";
       if (inputs.length == 2) {
-        column = inputs[1];
-        value = inputs[0];
+        column = inputs[0];
+        value = inputs[1];
       } else {
         return [["ERROR: Wrong Inputs"]];
       }
@@ -117,14 +117,18 @@ export function REPLInput(props: REPLInputProps) {
       } else {
         col = currentCSV[0].indexOf(column);
         if (col === -1) {
-          return [["ERROR: Column Header not found in Loaded CSV"]];
+          return [
+            [
+              "ERROR: Column Header not found in Loaded CSV, check the formatting of the words you are searching for...",
+            ],
+          ];
         }
       }
 
-      currentCSV.shift(); // Q: Does this alter the loaded CSV ???
+      const csv_minus_header = currentCSV.slice(1);
       let rows_from_search: string[][] = []; // Q: Does this work and not cause an issue
       let found: boolean = false;
-      for (let row of currentCSV) {
+      for (let row of csv_minus_header) {
         if (row[col] === value) {
           found = true;
           rows_from_search.push(row);
@@ -144,25 +148,24 @@ export function REPLInput(props: REPLInputProps) {
     let command_string: string | undefined;
 
     // Parse input
-    if (Array.isArray(str)) {
-      command_string = str[0]; // if load() or search()
-    } else if (str == null) {
+    if (str == null) {
       return [["ERROR: Null input to handleCommand()"]];
+    } else if (str.split(" ").length > 1) {
+      command_string = str.split(" ")[0]; // if load() or search()
     } else {
       command_string = str; // if view()
     }
 
     let result_of_command: string[][];
-    if (command_string === "load") {
-      result_of_command = [[str], [loadCSV(str[1])]];
-    } else if (command_string === "view") {
-      result_of_command = viewCSV();
-      result_of_command.unshift([str]);
-    } else if (command_string === "search") {
-      result_of_command = searchCSV([str[1], str[2]]);
-      result_of_command.unshift([str]);
+    if (command_string.toLowerCase() === "load") {
+      result_of_command = [[str], [loadCSV(str.split(" ")[1])]];
+    } else if (command_string.toLowerCase() === "view") {
+      result_of_command = [[str], ...viewCSV()]; // Add command to result
+    } else if (command_string.toLowerCase() === "search") {
+      result_of_command = searchCSV([str.split(" ")[1], str.split(" ")[2]]);
+      result_of_command.unshift([str]); // Add command to result
     } else {
-      result_of_command = [[str], ["ERROR"]];
+      result_of_command = [[str], ["ERROR: Incorrect Input"]];
     }
 
     return result_of_command; // index 0: <command text>, rest: <result of running the command>

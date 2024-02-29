@@ -5,20 +5,25 @@ interface REPLHistoryProps {
   mode: string;
   // DONE: Fill with some shared state tracking all the pushed commands
 }
-
-function modeModifier() {
-  //TODO: Mode Modifier to make the response brief or verbose
-}
-
 export function REPLHistory(props: REPLHistoryProps) {
   return (
     <div className="repl-history">
-      {props.history.map((elem, i) => ( // Display through mapping through history creating <p></p> objects
-        <p key={i}>{elem}</p>
+      {props.history.map((elem, i) => (
+        <div key={i} style={{ marginBottom: "20px", marginTop: "20px" }}>
+          {props.mode.toLowerCase() === "brief" && <p>{elem[0].join(" ")}</p>}
+          <table border={1}>
+            <tbody>
+              {elem.slice(1).map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ))}
-      {/* This is where command history will go */}
-      {/* TODO: To go through all the pushed commands... try the .map() function! */}
-      commands.map()
     </div>
   );
 }
