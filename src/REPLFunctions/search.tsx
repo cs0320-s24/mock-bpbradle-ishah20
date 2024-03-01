@@ -44,7 +44,7 @@ export function search(args: Array<string>) {
       }
     }
     if (!found) {
-      return [[]];
+      return [["Did not find value in the CSV"]];
     }
     return rows_from_search;
   } else {
