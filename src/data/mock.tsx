@@ -52,5 +52,20 @@ export function getMocks() {
       ["RI", "Hispanic/Latino", "$673.14", "74596.18851", "$0.64", "14%"],
       ["RI", "Multiracial", "$971.89", "8883.049171", "$0.92", "2%"],
     ],
+    "data/census/dol_RI_earnings_malformed.csv": [
+      [
+        "State",
+        "Data Type",
+        "Number of Workers",
+        "Earnings Disparity",
+        "Employed Percent",
+      ],
+      ["RI", "White", "$1,058.47", 395773.6521, "$1.00", "75%"], // Different format
+      ["RI", "Black", , "30424.80376", "$0.73", "6%"], // Missing value for Average Weekly Earnings
+      ["RI", "0.45", "0%"], // Missing $ in Earnings Disparity
+      ["RI", "Asian-Pacific Islander", "$1,080.09", "$1.02", "4%"],
+      ["RI", "Hispanic/Latino", "$673.14", "74596.18851", "$0.64", "14%"],
+      ["RI", "Multiracial", "$971.89", "8883.049171", "$0.92", "2%"],
+    ],
   };
 }

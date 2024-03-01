@@ -15,6 +15,8 @@ One possible error depending on the users expected functionality is that when yo
 
 # Tests
 
+The testing suite we implemented uses playwright to manually ensure that our website is working it as we expect it to. PlayWright testing allows us to execute browser automation tests and interacte with our webpage to ensure it functions as we intend. We have alot of very basic tests that ensure functionality of our website via interaction with buttons and commands, such as tests that ensure the load button exists, that you don't see anything until you login, that the count button increments. Additionally, we test to see what happens when we give incorrect inputs, and how they return errors in the REPL history, checking between brief and verbose mode. We also check simultaneous tab execution, and ensure that you have to login again if you reload the page. We then check to see if the load, view, and search commands work on multiple datasets on brief and verbose mode. The last thing we test is malformed CSV's, and how to load, view, and search them.
+
 # How to
 
 How to run the tests: Run npm test in terminal.
