@@ -40,7 +40,7 @@ export function REPLInput(props: REPLInputProps) {
     if (command_string.toLowerCase() === "load") {
       let filepath: string = str.split(" ")[1];
       let loadedCSV: string[][] = load([filepath]);
-      if (
+      if ( // If no error with the CSV
         loadedCSV[0][0] !== "ERROR given CSV does not exist" &&
         loadedCSV[0][0] !== "ERROR malformed CSV given"
       ) {
@@ -76,20 +76,24 @@ export function REPLInput(props: REPLInputProps) {
         return result_of_command;
       }
       // only runs search() if input gave the right amount of args
-      else if (str.split(" ").length === 3) {
+      else if (str.split(" ").length >= 3) {
+        console.log(str.substring(str.indexOf(">")+1));
+        let newString: string = str.substring(str.indexOf(">") + 1);
+        console.log(
+          newString.substring(
+            newString.indexOf("<") + 1,
+            newString.indexOf(">")
+          )
+        );
         let csv: string[][] = search([
           currentCSV!, // filename of loaded csv
-          str.split(" ")[1], // Column to search
-          str.split(" ")[2], // Value to search for
+          str.substring(str.indexOf("<") + 1, str.indexOf(">")), // Column to search
+          str.substring(str.indexOf(">") + 1).substring(
+              str.substring(str.indexOf(">") + 1).indexOf("<") + 1,
+              str.substring(str.indexOf(">") + 1).indexOf(">")
+            ), // Value to search for
         ]);
         result_of_command = [[[str]], csv];
-      }
-      // If too many args
-      else if (str.split(" ").length > 3) {
-        result_of_command = [
-          [[str]],
-          [["ERROR: Provided too many terms in search"]],
-        ];
       }
       // If too few args
       else {
