@@ -37,6 +37,7 @@ export function REPLInput(props: REPLInputProps) {
     }
 
     let result_of_command: string[][][];
+
     // LOAD
     if (command_string.toLowerCase() === "load") {
       let filepath: string = str.split(" ")[1];
@@ -48,34 +49,59 @@ export function REPLInput(props: REPLInputProps) {
         result_of_command = [[[str]], loadedCSV];
       }
     }
+
     // VIEW
     else if (command_string.toLowerCase() === "view") {
       if (currentCSV === undefined) {
         result_of_command = [
-          [[str]], [["ERROR: calling view when no csv has been loaded"]],
+          [[str]],
+          [["ERROR: calling view when no csv has been loaded"]],
         ];
         return result_of_command;
       }
       let csv: string[][] = view([currentCSV!]);
       result_of_command = [[[str]], csv]; // Add command to result
     }
+
     // SEARCH
     else if (command_string.toLowerCase() === "search") {
-      if (currentCSV === undefined) {
+      if (currentCSV === undefined) { // If not loaded
         result_of_command = [
           [[str]],
-          [["ERROR: calling search when no csv has been loaded"]]
+          [["ERROR: calling search when no csv has been loaded"]],
         ];
         return result_of_command;
+      } 
+      else if (str.split(" ").length === 3) { // If the right amount of args
+        let csv: string[][] = search([
+          currentCSV!, // filename of loaded csv
+          str.split(" ")[1], // Column to search
+          str.split(" ")[2], // Value to search for
+        ]);
+        result_of_command = [[[str]], csv];
+      } 
+      else if (str.split(" ").length > 3) {
+        // If too many args
+        result_of_command = [
+          [[str]],
+          [["ERROR: Provided too many terms in search"]],
+        ];
       }
-      let csv: string[][] = search([
-        currentCSV!, // filename of loaded csv
-        str.split(" ")[1], // Column to search
-        str.split(" ")[2], // Value to search for
-      ]);
-      result_of_command = [[[str]], csv];
-    } else {
-      result_of_command = [[[str]], [["ERROR: Incorrect Input"]]];
+      else {
+        // If too few args
+        result_of_command = [
+          [[str]],
+          [["ERROR: Provided too few terms in search"]],
+        ];
+      }
+    } 
+
+    // ERROR
+    else {
+      result_of_command = [
+        [[str]],
+        [["ERROR: could not recognize your command"]],
+      ];
     }
     return result_of_command; // index 0: <command text>, rest: <result of running the command>
   }

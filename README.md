@@ -22,7 +22,16 @@ To build and run the program run in terminal : npm start
 Then click on the local host link eventually displayed in the terminal.
 You will then be brought to your browser and see a Login button which upon clicking displays a command entering textbox and two buttons. One button changes the mode of the history, which will be displayed above the textbook, and the other button to submit whatever command you type into the textbox.
 
-Example commands to enter would be:
+Examples of commands to enter would be:
+
+- Loading Mock csv #1 -> load data/census/dol_ri_earnings_disparity_no_header.csv
+- Loading Mock csv #2 -> load data/census/dol_ri_earnings_disparity.csv
+- Try loading a non-existent mock csv -> load data/census/dol_ri_earnings_dity_no_header.csv
+- View after a load command -> view
+- View before a load command -> view
+- Search after loading Mock csv #1: search White Black
+- Incorrect search after loading Mock csv #1: search white black
+- Search after loading Mock csv #2: search State RI
 
 # Collaboration
 
