@@ -3,6 +3,7 @@
 Project Name: Mock
 Team Members & Contributions: Ibrahim Shah & Benjamin Bradley ->
 Together we did the load, view, and search via pair programming in person (Monday & Wednesday). Additionally, we fleshed out the readme together on Thursday. Benjamin completed Mode button Monday night and did small adjustments to the REPL interface, and most of the comments. Ibrahim completed most of the testing suite.
+Probably took us around 24-28 hours
 
 # Design Choices
 

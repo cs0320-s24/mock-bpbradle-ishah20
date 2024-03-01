@@ -164,6 +164,24 @@ test("View command displays data correctly", async ({ page }) => {
   await page.getByRole("cell", { name: "$1,058.47" }).isVisible();
 });
 
+test("View command displays data correctly on verbose mode", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8008/");
+  await page.getByLabel("Login").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("Load data/census/dol_ri_earnings_disparity.csv");
+  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  await page.getByRole("button", { name: "Brief mode" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("view");
+  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("cell", { name: "$1,058.47" }).isVisible();
+  await expect(page.locator(".repl-history")).toContainText(
+    "successfully loaded data/census/dol_ri_earnings_disparity.csv"
+  );
+});
+
 test("Search command displays data correctly", async ({ page }) => {
   await page.getByRole("button", { name: "Login" }).click();
   await page
@@ -175,6 +193,25 @@ test("Search command displays data correctly", async ({ page }) => {
     .fill("search <Average Weekly Earnings> <$770.26>");
   await page.getByRole("button", { name: "Submitted 1 times" }).click();
   await page.getByRole("cell", { name: "$770.26" }).isVisible();
+});
+
+test("Search command displays data correctly on verbose mode", async ({
+  page,
+}) => {
+  await page.getByRole("button", { name: "Login" }).click();
+  await page
+    .getByRole("textbox")
+    .fill("Load data/census/dol_ri_earnings_disparity.csv");
+  await page.getByRole("button", { name: "Brief mode" }).click();
+  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("search <Average Weekly Earnings> <$770.26>");
+  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("cell", { name: "$770.26" }).isVisible();
+  await expect(page.locator(".repl-history")).toContainText(
+    "successfully loaded data/census/dol_ri_earnings_disparity.csv"
+  );
 });
 
 test("Handles malformed CSV on load", async ({ page }) => {
