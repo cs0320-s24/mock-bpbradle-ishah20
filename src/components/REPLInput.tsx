@@ -1,5 +1,5 @@
 import "../styles/main.css";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { mock } from "node:test";
 import { load } from "../REPLFunctions/load";
@@ -9,8 +9,9 @@ import { search } from "../REPLFunctions/search";
 interface REPLInputProps {
   history: string[][][][];
   setHistory: Dispatch<SetStateAction<string[][][][]>>;
-  mode: string | undefined;
-  setMode: Dispatch<SetStateAction<string | undefined>>;
+  mode: string;
+  setMode: Dispatch<SetStateAction<string>>;
+  updateREPL: (newState: string) => void;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -21,6 +22,12 @@ export function REPLInput(props: REPLInputProps) {
   const [count, setCount] = useState<number>(0);
   const [mode, setMode] = useState<string>("Brief");
   const [currentCSV, setCurrentCSV] = useState<string>();
+
+  useEffect(() => {
+    console.log("Mode in REPLInput updated to:", mode);
+  }, [mode]);
+
+  useEffect;
 
   // Parses input and calls function for inputted command
   function handleCommand(str: string | null): string[][][] {
@@ -83,9 +90,10 @@ export function REPLInput(props: REPLInputProps) {
   const handleModeswitch = () => {
     if (mode == "Verbose") {
       setMode("Brief");
-    }
-    if (mode == "Brief") {
+      props.updateREPL("Brief");
+    } else if (mode == "Brief") {
       setMode("Verbose");
+      props.updateREPL("Verbose");
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/main.css";
 import { REPLHistory } from "./REPLHistory";
 import { REPLInput } from "./REPLInput";
@@ -15,7 +15,16 @@ import { REPLInput } from "./REPLInput";
 export default function REPL() {
   // shared state that holds all the commands submitted.
   const [history, setHistory] = useState<string[][][][]>([]);
-  const [mode, setMode] = useState<string>();
+  const [mode, setMode] = useState<string>("Brief");
+  const updateREPLMode = (newMode: string) => {
+    setMode(newMode);
+  };
+
+  useEffect(() => {
+    console.log("Mode in REPL updated to:", mode);
+  }, [mode]);
+
+  useEffect;
 
   return (
     <div className="repl">
@@ -26,6 +35,7 @@ export default function REPL() {
       <REPLHistory history={history} mode={mode} />
       <hr></hr>
       <REPLInput
+        updateREPL={updateREPLMode}
         history={history}
         setHistory={setHistory}
         mode={mode}

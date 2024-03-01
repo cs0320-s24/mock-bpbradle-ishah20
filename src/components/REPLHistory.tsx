@@ -1,19 +1,20 @@
 import "../styles/main.css";
+import { Dispatch, SetStateAction, useState } from "react";
 
 interface REPLHistoryProps {
-  history: string[][][][]; // list of [[[cmd]], csv] where csv is a string[][]
+  history: string[][][][]; // list of [[[cmd]], csv] where csv is a string[][]]
   mode: string | undefined;
   // DONE: Fill with some shared state tracking all the pushed command
 }
 
-export function REPLHistory({ history, mode }: REPLHistoryProps) {
-  console.log(history);
+export function REPLHistory(props: REPLHistoryProps) {
+  
   return (
     <div className="repl-history">
-      {history.map(([cmd, csv], i) => (
+      {props.history.map(([cmd, csv], i) => (
         <div key={i} style={{ marginBottom: "20px", marginTop: "20px" }}>
           {/* Add [cmd], elem[0] (aka ) as caption */}
-          {mode !== "Brief" && (
+          {props.mode !== "Brief" && (
             <p style={{ color: "#7FFFD4" }}>{cmd.join(" ")}</p>
           )}
           {csv.length === 1 && csv[0].length === 1 ? (
