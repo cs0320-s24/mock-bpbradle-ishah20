@@ -35,7 +35,7 @@ export function search(args: Array<string>) {
     }
 
     const csv_minus_header = currentCSV.slice(1);
-    let rows_from_search: string[][] = []; // Q: Does this work and not cause an issue
+    let rows_from_search: string[][] = []; 
     let found: boolean = false;
     for (let row of csv_minus_header) {
       if (row[col] === value) {

@@ -13,17 +13,15 @@ interface REPLInputProps {
   setMode: Dispatch<SetStateAction<string>>;
   updateREPL: (newState: string) => void;
 }
-// You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
-// REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
+
+
 export function REPLInput(props: REPLInputProps) {
-  // Remember: let React manage state in your webapp.
-  // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
   const [count, setCount] = useState<number>(0);
   const [mode, setMode] = useState<string>("Brief");
   const [currentCSV, setCurrentCSV] = useState<string>();
 
-  // Parses input and calls function for inputted command
+  // Parses input and calls function for inputted command or displays error
   function handleCommand(str: string | null): string[][][] {
     let command_string: string | undefined;
 
@@ -38,7 +36,7 @@ export function REPLInput(props: REPLInputProps) {
 
     let result_of_command: string[][][];
 
-    // LOAD
+    // If: LOAD
     if (command_string.toLowerCase() === "load") {
       let filepath: string = str.split(" ")[1];
       let loadedCSV: string[][] = load([filepath]);
@@ -50,8 +48,9 @@ export function REPLInput(props: REPLInputProps) {
       }
     }
 
-    // VIEW
+    // If: VIEW
     else if (command_string.toLowerCase() === "view") {
+      // no csv loaded
       if (currentCSV === undefined) {
         result_of_command = [
           [[str]],
@@ -63,32 +62,34 @@ export function REPLInput(props: REPLInputProps) {
       result_of_command = [[[str]], csv]; // Add command to result
     }
 
-    // SEARCH
+    // If: SEARCH
     else if (command_string.toLowerCase() === "search") {
-      if (currentCSV === undefined) { // If not loaded
+      // no csv loaded
+      if (currentCSV === undefined) {
         result_of_command = [
           [[str]],
           [["ERROR: calling search when no csv has been loaded"]],
         ];
         return result_of_command;
-      } 
-      else if (str.split(" ").length === 3) { // If the right amount of args
+      }
+      // only runs search() if input gave the right amount of args
+      else if (str.split(" ").length === 3) {
         let csv: string[][] = search([
           currentCSV!, // filename of loaded csv
           str.split(" ")[1], // Column to search
           str.split(" ")[2], // Value to search for
         ]);
         result_of_command = [[[str]], csv];
-      } 
+      }
+      // If too many args
       else if (str.split(" ").length > 3) {
-        // If too many args
         result_of_command = [
           [[str]],
           [["ERROR: Provided too many terms in search"]],
         ];
       }
+      // If too few args
       else {
-        // If too few args
         result_of_command = [
           [[str]],
           [["ERROR: Provided too few terms in search"]],
@@ -96,7 +97,7 @@ export function REPLInput(props: REPLInputProps) {
       }
     } 
 
-    // ERROR
+    // If: ERROR
     else {
       result_of_command = [
         [[str]],
@@ -107,18 +108,13 @@ export function REPLInput(props: REPLInputProps) {
   }
 
   // DONE WITH TA: build a handleSubmit function called in button onClick
-  // DONE: Once it increments, try to make it push commands... Note that you can use the `...` spread syntax to copy what was there before
-  // add to it with new commands.
-  /**
-   * We suggest breaking down this component into smaller components, think about the individual pieces
-   * of the REPL and how they connect to each other...
-   */
   const handleSubmit = () => {
     setCount(count + 1);
     props.setHistory([...props.history, handleCommand(commandString)]); // Update history variable from top level
     setCommandString("");
   };
 
+  // Switch mode to other mode on click of the mode button
   const handleModeswitch = () => {
     if (mode == "Verbose") {
       setMode("Brief");
@@ -131,10 +127,6 @@ export function REPLInput(props: REPLInputProps) {
 
   return (
     <div className="repl-input">
-      {/* This is a comment within the JSX. Notice that it's a TypeScript comment wrapped in
-            braces, so that React knows it should be interpreted as TypeScript */}
-      {/* I opted to use this HTML tag; you don't need to. It structures multiple input fields
-            into a single unit, which makes it easier for screenreaders to navigate. */}
       <fieldset>
         <legend>Enter a command:</legend>
         <ControlledInput
