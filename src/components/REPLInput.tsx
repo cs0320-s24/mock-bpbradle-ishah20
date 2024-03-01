@@ -23,12 +23,6 @@ export function REPLInput(props: REPLInputProps) {
   const [mode, setMode] = useState<string>("Brief");
   const [currentCSV, setCurrentCSV] = useState<string>();
 
-  useEffect(() => {
-    console.log("Mode in REPLInput updated to:", mode);
-  }, [mode]);
-
-  useEffect;
-
   // Parses input and calls function for inputted command
   function handleCommand(str: string | null): string[][][] {
     let command_string: string | undefined;
@@ -46,13 +40,21 @@ export function REPLInput(props: REPLInputProps) {
     // LOAD
     if (command_string.toLowerCase() === "load") {
       let filepath: string = str.split(" ")[1];
-      setCurrentCSV(filepath);
-      result_of_command = [[[str]], [["<Loaded CSV> --> " + filepath]]];
+      let loadedCSV: string[][] = load([filepath]);
+      if (loadedCSV[0][0] !== "ERROR given CSV does not exist") {
+        setCurrentCSV(filepath);
+        result_of_command = [[[str]], [["successfully loaded " + filepath]]];
+      } else {
+        result_of_command = [[[str]], loadedCSV];
+      }
     }
     // VIEW
     else if (command_string.toLowerCase() === "view") {
       if (currentCSV === undefined) {
-        result_of_command = [[["ERROR: calling view when no csv is loaded"]]];
+        result_of_command = [
+          [[str]], [["ERROR: calling view when no csv has been loaded"]],
+        ];
+        return result_of_command;
       }
       let csv: string[][] = view([currentCSV!]);
       result_of_command = [[[str]], csv]; // Add command to result
@@ -60,7 +62,11 @@ export function REPLInput(props: REPLInputProps) {
     // SEARCH
     else if (command_string.toLowerCase() === "search") {
       if (currentCSV === undefined) {
-        result_of_command = [[["ERROR: calling search when no csv is loaded"]]];
+        result_of_command = [
+          [[str]],
+          [["ERROR: calling search when no csv has been loaded"]]
+        ];
+        return result_of_command;
       }
       let csv: string[][] = search([
         currentCSV!, // filename of loaded csv

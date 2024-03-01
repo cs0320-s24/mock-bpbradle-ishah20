@@ -28,11 +28,9 @@ export function search(args: Array<string>) {
     } else {
       col = currentCSV[0].indexOf(column);
       if (col === -1) {
-        return [
-          [
+        return [[
             "ERROR: Column Header not found in Loaded CSV, check the formatting of the words you are searching for...",
-          ],
-        ];
+          ]];
       }
     }
 

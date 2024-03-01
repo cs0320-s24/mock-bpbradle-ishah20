@@ -20,12 +20,6 @@ export default function REPL() {
     setMode(newMode);
   };
 
-  useEffect(() => {
-    console.log("Mode in REPL updated to:", mode);
-  }, [mode]);
-
-  useEffect;
-
   return (
     <div className="repl">
       {/*This is where your REPLHistory might go... You also may choose to add it within your REPLInput 

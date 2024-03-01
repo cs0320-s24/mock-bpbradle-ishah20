@@ -9,6 +9,6 @@ export function load(args: Array<string>) {
   if (csv) {
     return csv;
   } else {
-    return [["ERROR in loading CSV"]];
+    return [["ERROR given CSV does not exist"]];
   }
 }
