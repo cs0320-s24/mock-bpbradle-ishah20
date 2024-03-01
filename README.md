@@ -29,11 +29,12 @@ Examples of commands to enter would be:
 - Loading Mock csv #1 -> load data/census/dol_ri_earnings_disparity_no_header.csv
 - Loading Mock csv #2 -> load data/census/dol_ri_earnings_disparity.csv
 - Try loading a non-existent mock csv -> load data/census/dol_ri_earnings_dity_no_header.csv
+- Try loading a malformed csv -> load data/census/dol_RI_earnings_malformed.csv
 - View after a load command -> view
 - View before a load command -> view
-- Search after loading Mock csv #1: search White Black
-- Incorrect search after loading Mock csv #1: search white black
-- Search after loading Mock csv #2: search State RI
+- Search after loading Mock csv #1: search \<White\> \<Black\>
+- Incorrect search after loading Mock csv #1: search \<white\> \<black\>
+- Search after loading Mock csv #2: search \<State\> \<RI\>
 
 # Collaboration
 
