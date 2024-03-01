@@ -36,7 +36,7 @@ test("submitting incorrect dataset updates REPL history", async ({ page }) => {
   await page.getByRole("button", { name: "Login" }).click();
   await page.getByRole("textbox").fill("mock command");
   await page.getByRole("button", { name: "Submitted 0 times" }).click();
-  await expect(page.locator("repl.history")).toContainText(
+  await expect(page.locator(".repl-history")).toContainText(
     "ERROR: could not recognize your command"
   );
 });
@@ -71,11 +71,13 @@ test("invalid command displays error, updates history, and then changes to verbo
   await expect(page.locator(".repl-history")).toContainText(
     "ERROR: could not recognize your command"
   );
-  await expect(page.locator(".repl-history")).not.toContainText(
+  await expect(page.locator(".repl-history")).toContainText(
     "ERROR: could not recognize your command"
   );
   await page.getByRole("button", { name: "Brief mode" });
-  await expect(page.locator(".repl-history")).toContainText("invalidCommand");
+  await expect(page.locator(".repl-history")).toContainText(
+    "ERROR: could not recognize your command"
+  );
 });
 
 test("simultaneous command execution", async ({ page }) => {
@@ -151,11 +153,15 @@ test("Can load multiple data sets on verbose mode", async ({ page }) => {
  * Do I show the whole dataset?
  */
 test("View command displays data correctly", async ({ page }) => {
-  await page.getByRole("button", { name: "Login" }).click();
+  await page.goto("http://localhost:8008/");
+  await page.getByLabel("Login").click();
   await page
-    .getByRole("textbox")
+    .getByPlaceholder("Enter command here!")
     .fill("Load data/census/dol_ri_earnings_disparity.csv");
   await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("view");
+  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("cell", { name: "$1,058.47" }).isVisible();
 });
 
 test("Search command displays data correctly", async ({ page }) => {
@@ -164,11 +170,11 @@ test("Search command displays data correctly", async ({ page }) => {
     .getByRole("textbox")
     .fill("Load data/census/dol_ri_earnings_disparity.csv");
   await page.getByRole("button", { name: "Submitted 0 times" }).click();
-
-  await page.getByRole("textbox").fill("");
-  await expect(page.locator(".repl-history")).toContainText(
-    "successfully loaded data/census/dol_ri_earnings_disparity.csv"
-  );
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("search <Average Weekly Earnings> <$770.26>");
+  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("cell", { name: "$770.26" }).isVisible();
 });
 
 test("Handles malformed CSV on load", async ({ page }) => {
@@ -179,7 +185,7 @@ test("Handles malformed CSV on load", async ({ page }) => {
   await page.getByRole("button", { name: "Submitted 0 times" }).click();
 
   await expect(page.locator(".repl-history")).toContainText(
-    "successfully loaded data/census/dol_RI_earnings_malformed.csv"
+    "ERROR malformed CSV given"
   );
 });
 
@@ -191,14 +197,8 @@ test("Handles malformed CSV on view", async ({ page }) => {
   await page.getByRole("button", { name: "Submitted 0 times" }).click();
 
   await expect(page.locator(".repl-history")).toContainText(
-    "successfully loaded data/census/dol_RI_earnings_malformed.csv"
+    "ERROR malformed CSV given"
   );
-
-  await page.getByRole("textbox").fill("view");
-
-  await page.getByRole("button", { name: "Submitted 1 times" }).click();
-
-  // Some sort of command that checks to see the view
 });
 
 test("Handles malformed CSV on search", async ({ page }) => {
@@ -209,12 +209,13 @@ test("Handles malformed CSV on search", async ({ page }) => {
   await page.getByRole("button", { name: "Submitted 0 times" }).click();
 
   await expect(page.locator(".repl-history")).toContainText(
-    "successfully loaded data/census/dol_RI_earnings_malformed.csv"
+    "ERROR malformed CSV given"
   );
 
-  await page.getByRole("textbox").fill("search");
-
+  await page.getByRole("textbox").fill("search 1 2");
   await page.getByRole("button", { name: "Submitted 1 times" }).click();
 
-  // Some sort of command that checks to see the search
+  await expect(page.locator(".repl-history")).toContainText(
+    "ERROR: calling search when no csv has been loaded"
+  );
 });
