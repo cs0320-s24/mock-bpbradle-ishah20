@@ -40,7 +40,10 @@ export function REPLInput(props: REPLInputProps) {
     if (command_string.toLowerCase() === "load") {
       let filepath: string = str.split(" ")[1];
       let loadedCSV: string[][] = load([filepath]);
-      if (loadedCSV[0][0] !== "ERROR given CSV does not exist") {
+      if (
+        loadedCSV[0][0] !== "ERROR given CSV does not exist" &&
+        loadedCSV[0][0] !== "ERROR malformed CSV given"
+      ) {
         setCurrentCSV(filepath);
         result_of_command = [[[str]], [["successfully loaded " + filepath]]];
       } else {
